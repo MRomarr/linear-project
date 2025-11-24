@@ -1,5 +1,3 @@
-// Gaussian Elimination REF/RREF – clean version with validation added
-
 const generateBtn = document.getElementById('generateBtn');
 const clearBtn = document.getElementById('clearBtn');
 const solveBtn = document.getElementById('solveBtn');
@@ -122,10 +120,8 @@ function readMatrix() {
             const inp = entries[i][j];
             const raw = inp.value.trim();
 
-            // reset old error state
             inp.classList.remove("input-error", "shake");
 
-            // EMPTY
             if (raw === "") {
                 emptyCells.push({
                     r: i + 1,
@@ -135,7 +131,6 @@ function readMatrix() {
                 continue;
             }
 
-            // NON-NUMERIC
             const v = Number(raw);
             if (Number.isNaN(v)) {
                 nonNumericCells.push({
@@ -147,26 +142,22 @@ function readMatrix() {
                 continue;
             }
 
-            // valid: allow negative & zero
             row.push(v);
         }
 
         M.push(row);
     }
 
-    // ---------- If ANY error exists ----------
     if (emptyCells.length > 0 || nonNumericCells.length > 0) {
 
         let errorText = "Errors:<br>";
 
-        // highlight EMPTY cells
         if (emptyCells.length > 0) {
             emptyCells.forEach(c => c.element.classList.add("input-error", "shake"));
             const pos = emptyCells.map(c => `(${c.r}, ${c.c})`).join(", ");
             errorText += `• Empty cells: ${pos}<br>`;
         }
 
-        // highlight NON-NUMERIC cells
         if (nonNumericCells.length > 0) {
             nonNumericCells.forEach(c => c.element.classList.add("input-error", "shake"));
             const pos = nonNumericCells
@@ -182,8 +173,6 @@ function readMatrix() {
 
         return null;
     }
-
-    // no errors → valid
     return M;
 }
 
