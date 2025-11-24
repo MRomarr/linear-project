@@ -1,4 +1,4 @@
-// Gaussian Elimination REF/RREF – clean version without Fill Example
+// Gaussian Elimination REF/RREF – clean version with validation added
 
 const generateBtn = document.getElementById('generateBtn');
 const clearBtn = document.getElementById('clearBtn');
@@ -110,33 +110,94 @@ generateBtn.addEventListener('click', () => {
     solveBtn.style.display = 'inline-flex';
 });
 
+function readMatrix() {
+    let M = [];
+    let emptyCells = [];
+    let nonNumericCells = [];
+
+    for (let i = 0; i < n; i++) {
+        let row = [];
+
+        for (let j = 0; j < n + 1; j++) {
+            const inp = entries[i][j];
+            const raw = inp.value.trim();
+
+            // reset old error state
+            inp.classList.remove("input-error", "shake");
+
+            // EMPTY
+            if (raw === "") {
+                emptyCells.push({
+                    r: i + 1,
+                    c: j + 1,
+                    element: inp
+                });
+                continue;
+            }
+
+            // NON-NUMERIC
+            const v = Number(raw);
+            if (Number.isNaN(v)) {
+                nonNumericCells.push({
+                    r: i + 1,
+                    c: j + 1,
+                    value: raw,
+                    element: inp
+                });
+                continue;
+            }
+
+            // valid: allow negative & zero
+            row.push(v);
+        }
+
+        M.push(row);
+    }
+
+    // ---------- If ANY error exists ----------
+    if (emptyCells.length > 0 || nonNumericCells.length > 0) {
+
+        let errorText = "Errors:<br>";
+
+        // highlight EMPTY cells
+        if (emptyCells.length > 0) {
+            emptyCells.forEach(c => c.element.classList.add("input-error", "shake"));
+            const pos = emptyCells.map(c => `(${c.r}, ${c.c})`).join(", ");
+            errorText += `• Empty cells: ${pos}<br>`;
+        }
+
+        // highlight NON-NUMERIC cells
+        if (nonNumericCells.length > 0) {
+            nonNumericCells.forEach(c => c.element.classList.add("input-error", "shake"));
+            const pos = nonNumericCells
+                .map(c => `(${c.r}, ${c.c})="${c.value}"`)
+                .join(", ");
+            errorText += `• Non-numeric cells: ${pos}<br>`;
+        }
+
+        stepsContainer.innerHTML = `
+        <div class="hint" style="color:#dc2626;font-weight:bold;">
+            ${errorText}
+        </div>`;
+
+        return null;
+    }
+
+    // no errors → valid
+    return M;
+}
+
+
+
 clearBtn.addEventListener('click', () => {
     matrixArea.innerHTML = '<div class="hint">Press "Generate Matrix" to create the input grid.</div>';
     entries = [];
-    stepsContainer.innerHTML = '<div class="hint">No steps yet — generate matrix and press Solve.</div>';
+    stepsContainer.innerHTML = '<div class="hint">No steps yet</div>';
     finalResult.style.display = 'none';
 
     clearBtn.style.display = 'none';
     solveBtn.style.display = 'none';
 });
-
-function readMatrix() {
-    const M = [];
-    for (let i = 0; i < n; i++) {
-        const row = [];
-        for (let j = 0; j < n + 1; j++) {
-            const raw = entries[i][j].value.trim();
-            if (raw === '') { row.push(0); continue; }
-
-            const v = Number(raw);
-            if (Number.isNaN(v)) { alert('All values must be numeric'); return null; }
-
-            row.push(v);
-        }
-        M.push(row);
-    }
-    return M;
-}
 
 solveBtn.addEventListener('click', () => {
     stepsContainer.innerHTML = '';
@@ -194,9 +255,7 @@ solveBtn.addEventListener('click', () => {
 
     appendStep('Row Echelon Form (REF)', M);
 
-    if (mode === 'REF') {
-        return; 
-    }
+    if (mode === 'REF') return;
 
     for (let i = n - 1; i >= 0; i--) {
         let pivot_col = -1;
@@ -227,9 +286,9 @@ solveBtn.addEventListener('click', () => {
 
     appendStep('Reduced Row Echelon Form (RREF)', M);
 
-    const sol = [];
-    for (let i = 0; i < n; i++) sol.push(M[i][n]);
+    const solution = [];
+    for (let i = 0; i < n; i++) solution.push(M[i][n]);
 
-    finalText.textContent = sol.map((v, i) => `x${i + 1} = ${prettyNum(v)}`).join('\n');
+    finalText.textContent = solution.map((v, i) => `x${i + 1} = ${prettyNum(v)}`).join('\n');
     finalResult.style.display = 'block';
 });
