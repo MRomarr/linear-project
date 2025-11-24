@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gaussian Elimination</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <header class="top">
+            <h1>Gaussian Elimination</h1>
+        </header>
+
+        <main class="main">
+            <section class="panel left">
+                <label for="n">Number of equations (n)</label>
+                <input id="n" type="number" min="1" value="3" />
+
+                <div class="controls">
+                    <button id="generateBtn" class="btn primary">Generate Matrix</button>
+                    <button id="clearBtn" class="btn ghost">Clear</button>
+                </div>
+
+                <div class="controls" style="margin-top:6px;align-items:center;">
+                    <label style="font-weight:600;font-size:14px;margin-right:8px;">Mode</label>
+                    <select id="mode" style="padding:8px;border-radius:8px;border:1px solid var(--border);">
+                        <option value="REF">REF (Row Echelon Form)</option>
+                        <option value="RREF" selected>RREF (Reduced Row Echelon Form)</option>
+                    </select>
+                </div>
+
+                <div id="matrixArea" class="matrix-area"></div>
+
+                <div class="bottom-row">
+                    <button id="solveBtn" class="btn success" style="display:none">Solve</button>
+                </div>
+            </section>
+
+            <section class="panel right">
+                <div class="status">
+                    <strong>Steps</strong>
+                </div>
+
+                <div id="stepsContainer" class="steps">
+                    <div class="hint">No steps yet</div>
+                </div>
+
+                <div id="finalResult" class="final" style="display:none">
+                    <strong>Final Result</strong>
+                    <pre id="finalText" class="final-text"></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
